@@ -1,0 +1,11 @@
+# Front end
+**/node_modules
+
+# Backend
+**/db_backup
+
+# Docker setup
+**/.env
+
+# Requirements engineering
+requirements.rtf
