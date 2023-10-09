@@ -3,6 +3,7 @@
 
 # Backend
 **/db_backup
+**/__pycache__
 
 # Docker setup
 **/.env

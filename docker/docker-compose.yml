@@ -1,0 +1,20 @@
+services:
+  mysql:
+    image: mysql:8.1.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ${DB_DATA_DIR}:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  backend:
+    build:
+      dockerfile: ./backend.Dockerfile
+    volumes:
+      - ${BACKEND_DIR}:/media/backend
+    environment:
+      - DATABASE_PASSWORD=${MYSQL_PASSWORD}
+    entrypoint: /tools/entrypoint.sh
+    ports:
+      - 8000:8000
