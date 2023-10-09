@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "Backend"
+version = "0.1.0"
+description = "FastAPI backend for the task manager app"
+authors = ["Luca Galbusera <lucagalbu@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.103.2"
+mysql-connector-python = "^8.1.0"
+
+[tool.poetry.scripts]
+start = "backend.main:startServer"
+
+[tool.poetry.group.dev.dependencies]
+uvicorn = {extras = ["standard"], version = "^0.23.2"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
