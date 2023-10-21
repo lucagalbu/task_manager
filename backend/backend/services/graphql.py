@@ -14,12 +14,14 @@ def getTaskByID(dao: DAO, id: strawberry.ID) -> Task:
 
 
 def createGraphqlApp(dao: DAO):
-    def getTasks(id: Optional[strawberry.ID]) -> list[Task]:
-        task: list[Task] = []
+    def getTasks(id: Optional[strawberry.ID] = None) -> list[Task]:
+        tasks: list[Task] = []
         if id is not None:
-            task = [getTaskByID(dao, id)]
+            tasks = [getTaskByID(dao, id)]
+        else:
+            tasks = getAllTasks(dao)
 
-        return task
+        return tasks
 
     def addTask(
         title: str,
