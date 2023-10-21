@@ -120,7 +120,6 @@ class Mysql:
                 "Multiple tasks with the same id found. Using the first one"
             )
 
-        logging.debug(result)
         args = dict(zip(fields, result[0]))
         task = Task(**args)  # type: ignore
         return task
