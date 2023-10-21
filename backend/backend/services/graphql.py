@@ -13,6 +13,12 @@ def getTaskByID(dao: DAO, id: strawberry.ID) -> Task:
     return taskQL
 
 
+def getAllTasks(dao: DAO) -> list[Task]:
+    tasksDao = dao.getAllTasks()
+    tasksQL = [convertTaskDaoToGraphQL(task) for task in tasksDao]
+    return tasksQL
+
+
 def createGraphqlApp(dao: DAO):
     def getTasks(id: Optional[strawberry.ID] = None) -> list[Task]:
         tasks: list[Task] = []
