@@ -124,6 +124,17 @@ class Mysql:
         task = Task(**args)  # type: ignore
         return task
 
+    def getAllTasks(self) -> list[Task]:
+        fields = [field.name for field in dataclasses.fields(Task)]
+
+        sql_command = f"SELECT  * FROM {self._config.table}"
+        self._cursor.execute(sql_command)
+        results = self._cursor.fetchall()
+
+        args = [dict(zip(fields, result)) for result in results]
+        tasks = [Task(**arg) for arg in args]  # type: ignore
+        return tasks
+
     def addTask(self, task: Task) -> int:
         fields = []
 
