@@ -4,24 +4,24 @@ import strawberry
 from strawberry.fastapi import GraphQLRouter
 from backend.dao.interfaces import DAO
 from backend.services.converters import convertTaskDaoToGraphQL, convertTaskGraphqlToDao
-from backend.services.schemas import Status, Task
+from backend.services.schemas import Status, TaskInput, TaskOutput
 
 
-def getTaskByID(dao: DAO, id: strawberry.ID) -> Task:
+def getTaskByID(dao: DAO, id: strawberry.ID) -> TaskOutput:
     taskDao = dao.getTaskByID(int(id))
     taskQL = convertTaskDaoToGraphQL(taskDao)
     return taskQL
 
 
-def getAllTasks(dao: DAO) -> list[Task]:
+def getAllTasks(dao: DAO) -> list[TaskOutput]:
     tasksDao = dao.getAllTasks()
     tasksQL = [convertTaskDaoToGraphQL(task) for task in tasksDao]
     return tasksQL
 
 
 def createGraphqlApp(dao: DAO):
-    def getTasks(id: Optional[strawberry.ID] = None) -> list[Task]:
-        tasks: list[Task] = []
+    def getTasks(id: Optional[strawberry.ID] = None) -> list[TaskOutput]:
+        tasks: list[TaskOutput] = []
         if id is not None:
             tasks = [getTaskByID(dao, id)]
         else:
@@ -38,7 +38,7 @@ def createGraphqlApp(dao: DAO):
         goal: Optional[str] = None,
         status: Status = Status.OPEN,
     ) -> int:
-        task_ql = Task(
+        task_ql = TaskInput(
             title=title,
             description=description,
             date_timestamp=date_timestamp,
@@ -53,7 +53,7 @@ def createGraphqlApp(dao: DAO):
 
     @strawberry.type
     class Query:
-        query_task: list[Task] = strawberry.field(
+        query_task: list[TaskOutput] = strawberry.field(
             resolver=getTasks, description="Retrieve a list of tasks"
         )
 

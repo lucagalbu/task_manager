@@ -11,22 +11,27 @@ class Status(Enum):
 
 
 @dataclass
-class Task:
+class TaskInput:
     title: str
-    status: Status = Status.OPEN
-    description: Optional[str] = None
-    date: Optional[datetime.date] = None
-    start_time: Optional[datetime.date] = None
-    end_time: Optional[datetime.date] = None
-    goal: Optional[str] = None
+    status: Status
+    description: Optional[str]
+    date: Optional[datetime.date]
+    start_time: Optional[datetime.date]
+    end_time: Optional[datetime.date]
+    goal: Optional[str]
+
+
+@dataclass
+class TaskOutput(TaskInput):
+    id: int
 
 
 class DAO(Protocol):
-    def getTaskByID(self, id: int) -> Task:
+    def getTaskByID(self, id: int) -> TaskOutput:
         ...
 
-    def getAllTasks(self) -> list[Task]:
+    def getAllTasks(self) -> list[TaskOutput]:
         ...
 
-    def addTask(self, task: Task) -> int:
+    def addTask(self, task: TaskInput) -> int:
         ...

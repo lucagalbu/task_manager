@@ -12,7 +12,7 @@ class Status(Enum):
 
 
 @strawberry.type
-class Task:
+class TaskInput:
     title: str
     status: Status = Status.OPEN
     description: Optional[str] = None
@@ -20,3 +20,8 @@ class Task:
     start_timestamp: Optional[datetime.date] = None
     end_timestamp: Optional[datetime.date] = None
     goal: Optional[str] = None
+
+
+@strawberry.type
+class TaskOutput(TaskInput):
+    id: int

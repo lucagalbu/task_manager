@@ -4,7 +4,7 @@ import mysql.connector
 import mysql.connector.connection
 import mysql.connector.cursor
 from dataclasses import dataclass
-from backend.dao.interfaces import Task
+from backend.dao.interfaces import TaskInput, TaskOutput
 
 
 @dataclass
@@ -108,8 +108,8 @@ class Mysql:
         logging.info("Closing database connection")
         self._mydb.close()
 
-    def getTaskByID(self, id: int) -> Task:
-        fields = [field.name for field in dataclasses.fields(Task)]
+    def getTaskByID(self, id: int) -> TaskOutput:
+        fields = [field.name for field in dataclasses.fields(TaskOutput)]
 
         sql_command = f"SELECT  * FROM {self._config.table} WHERE id={id}"
         self._cursor.execute(sql_command)
@@ -119,23 +119,24 @@ class Mysql:
             logging.warning(
                 "Multiple tasks with the same id found. Using the first one"
             )
-
+        logging.debug(result)
+        logging.debug(fields)
         args = dict(zip(fields, result[0]))
-        task = Task(**args)  # type: ignore
+        task = TaskOutput(**args)  # type: ignore
         return task
 
-    def getAllTasks(self) -> list[Task]:
-        fields = [field.name for field in dataclasses.fields(Task)]
+    def getAllTasks(self) -> list[TaskOutput]:
+        fields = [field.name for field in dataclasses.fields(TaskOutput)]
 
         sql_command = f"SELECT  * FROM {self._config.table}"
         self._cursor.execute(sql_command)
         results = self._cursor.fetchall()
 
         args = [dict(zip(fields, result)) for result in results]
-        tasks = [Task(**arg) for arg in args]  # type: ignore
+        tasks = [TaskOutput(**arg) for arg in args]  # type: ignore
         return tasks
 
-    def addTask(self, task: Task) -> int:
+    def addTask(self, task: TaskInput) -> int:
         fields = []
 
         if task.title is not None:
