@@ -40,7 +40,7 @@ class Mysql:
         else:
             logging.info("Database already existing")
 
-        logging.info(f"Switching to database ${self._config.database}")
+        logging.info(f"Switching to database {self._config.database}")
         self.__switchToTaksDatabase()
 
         logging.info(f"Checking existence of tasks table '{self._config.table}'")
