@@ -131,8 +131,7 @@ class Mysql:
             logging.warning(
                 "Multiple tasks with the same id found. Using the first one"
             )
-        logging.debug(result)
-        logging.debug(fields)
+
         task = TaskOutput(**result[0])  # type: ignore
         return task
 
