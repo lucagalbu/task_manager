@@ -1,5 +1,6 @@
 # Front end
 **/node_modules
+**/.svelte-kit
 
 # Backend
 **/db_backup
