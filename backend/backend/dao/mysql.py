@@ -1,5 +1,6 @@
 import dataclasses
 import logging
+from typing import cast
 import mysql.connector
 import mysql.connector.connection
 import mysql.connector.cursor
@@ -19,7 +20,7 @@ class MysqlConfig:
 
 class Mysql:
     _mydb: mysql.connector.connection.MySQLConnection
-    _cursor: mysql.connector.cursor.MySQLCursor
+    _cursor: mysql.connector.cursor.MySQLCursorDict
     _config: MysqlConfig
 
     def __init__(self, config: MysqlConfig):
@@ -65,7 +66,10 @@ class Mysql:
         )
         if isinstance(connection, mysql.connector.connection.MySQLConnection):
             self._mydb = connection
-            self._cursor = self._mydb.cursor()
+            self._cursor = cast(
+                mysql.connector.cursor.MySQLCursorDict,
+                self._mydb.cursor(dictionary=True),
+            )
         else:
             raise mysql.connector.errors.DatabaseError(
                 f"Expected a MySQLConnection connection, returned {type(connection)}"
@@ -76,11 +80,15 @@ class Mysql:
 
     def __checkDatabaseExists(self):
         self._cursor.execute("SHOW DATABASES")
-        databases = [result[0] for result in self._cursor.fetchall()]
+        databases = [
+            result["Database"]
+            for result in self._cursor.fetchall()
+            if result is not None
+        ]
         return self._config.database in databases
 
     def __switchToTaksDatabase(self):
-        self._cursor.execute(f"USE {self._config.database}")
+        self._cursor.execute(f"USE {self._config.database};")
 
     # TODO: Use schema validation using the Task type
     # TODO: Can MySQL use enum for status?
@@ -101,7 +109,11 @@ class Mysql:
 
     def __checkTableExists(self):
         self._cursor.execute("SHOW TABLES")
-        tables = [result[0] for result in self._cursor.fetchall()]
+        tables = [
+            result[f"Tables_in_{self._config.database}"]
+            for result in self._cursor.fetchall()
+            if result is not None
+        ]
         return self._config.table in tables
 
     def __del__(self):
@@ -121,19 +133,15 @@ class Mysql:
             )
         logging.debug(result)
         logging.debug(fields)
-        args = dict(zip(fields, result[0]))
-        task = TaskOutput(**args)  # type: ignore
+        task = TaskOutput(**result[0])  # type: ignore
         return task
 
     def getAllTasks(self) -> list[TaskOutput]:
-        fields = [field.name for field in dataclasses.fields(TaskOutput)]
-
         sql_command = f"SELECT  * FROM {self._config.table}"
         self._cursor.execute(sql_command)
         results = self._cursor.fetchall()
 
-        args = [dict(zip(fields, result)) for result in results]
-        tasks = [TaskOutput(**arg) for arg in args]  # type: ignore
+        tasks = [TaskOutput(**arg) for arg in results if arg is not None]  # type: ignore
         return tasks
 
     def addTask(self, task: TaskInput) -> int:
