@@ -2,6 +2,7 @@ import uvicorn
 import logging
 import os
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from backend.dao.interfaces import DAO
 from backend.dao.mysql import Mysql, MysqlConfig
 from backend.services.graphql import createGraphqlApp
@@ -24,5 +25,13 @@ logging.basicConfig(encoding="utf-8", level=logging.DEBUG)
 app = FastAPI()
 dao = initDao()
 graphql_app = createGraphqlApp(dao=dao)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(graphql_app, prefix="/query")
