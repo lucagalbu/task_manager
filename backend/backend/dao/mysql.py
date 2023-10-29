@@ -121,8 +121,6 @@ class Mysql:
         self._mydb.close()
 
     def getTaskByID(self, id: int) -> TaskOutput:
-        fields = [field.name for field in dataclasses.fields(TaskOutput)]
-
         sql_command = f"SELECT  * FROM {self._config.table} WHERE id={id}"
         self._cursor.execute(sql_command)
         result = self._cursor.fetchall()
