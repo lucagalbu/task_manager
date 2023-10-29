@@ -17,8 +17,8 @@ class TaskInput:
     status: Status = Status.OPEN
     description: Optional[str] = None
     date_timestamp: Optional[datetime.date] = None
-    start_timestamp: Optional[datetime.date] = None
-    end_timestamp: Optional[datetime.date] = None
+    start_timestamp: Optional[datetime.time] = None
+    end_timestamp: Optional[datetime.time] = None
     goal: Optional[str] = None
 
 

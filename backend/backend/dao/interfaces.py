@@ -16,8 +16,8 @@ class TaskInput:
     status: Status
     description: Optional[str]
     date: Optional[datetime.date]
-    start_time: Optional[datetime.date]
-    end_time: Optional[datetime.date]
+    start_time: Optional[datetime.time]
+    end_time: Optional[datetime.time]
     goal: Optional[str]
 
 
