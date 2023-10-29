@@ -37,7 +37,7 @@ def createGraphqlApp(dao: DAO):
         end_timestamp: Optional[datetime.date] = None,
         goal: Optional[str] = None,
         status: Status = Status.OPEN,
-    ) -> int:
+    ) -> TaskOutput:
         task_ql = TaskInput(
             title=title,
             description=description,
@@ -48,8 +48,8 @@ def createGraphqlApp(dao: DAO):
             status=status,
         )
         task_dao = convertTaskGraphqlToDao(task_ql)
-        task_id = dao.addTask(task_dao)
-        return task_id
+        added_task = dao.addTask(task_dao)
+        return convertTaskDaoToGraphQL(added_task)
 
     @strawberry.type
     class Query:
@@ -59,7 +59,7 @@ def createGraphqlApp(dao: DAO):
 
     @strawberry.type
     class Mutation:
-        add_task: int = strawberry.field(
+        add_task: TaskOutput = strawberry.field(
             resolver=addTask, description="Add one task to the database"
         )
 

@@ -33,5 +33,5 @@ class DAO(Protocol):
     def getAllTasks(self) -> list[TaskOutput]:
         ...
 
-    def addTask(self, task: TaskInput) -> int:
+    def addTask(self, task: TaskInput) -> TaskOutput:
         ...

@@ -141,7 +141,7 @@ class Mysql:
         tasks = [TaskOutput(**arg) for arg in results if arg is not None]  # type: ignore
         return tasks
 
-    def addTask(self, task: TaskInput) -> int:
+    def addTask(self, task: TaskInput) -> TaskOutput:
         fields = []
 
         if task.title is not None:
@@ -174,4 +174,5 @@ class Mysql:
         if id is None or self._cursor.rowcount != 1:
             raise RuntimeError("Unable to add key to the database")
 
-        return id
+        added_task = self.getTaskByID(id)
+        return added_task
