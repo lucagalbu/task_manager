@@ -176,3 +176,11 @@ class Mysql:
 
         added_task = self.getTaskByID(id)
         return added_task
+
+    def rmTask(self, id: int) -> TaskOutput:
+        task = self.getTaskByID(id)
+        sql_command = f"DELETE FROM {self._config.table} WHERE id={task.id}"
+        self._cursor.execute(sql_command)
+        self._mydb.commit()
+        # TODO: Check that the task doesn't exist, i.e. it has been succesfully deleted
+        return task

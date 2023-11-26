@@ -51,6 +51,10 @@ def createGraphqlApp(dao: DAO):
         added_task = dao.addTask(task_dao)
         return convertTaskDaoToGraphQL(added_task)
 
+    def rmTask(id: int) -> TaskOutput:
+        removed_id = dao.rmTask(id=id)
+        return convertTaskDaoToGraphQL(removed_id)
+
     @strawberry.type
     class Query:
         query_task: list[TaskOutput] = strawberry.field(
@@ -61,6 +65,10 @@ def createGraphqlApp(dao: DAO):
     class Mutation:
         add_task: TaskOutput = strawberry.field(
             resolver=addTask, description="Add one task to the database"
+        )
+
+        rm_task: TaskOutput = strawberry.field(
+            resolver=rmTask, description="Remove one task from the database"
         )
 
     schema = strawberry.Schema(query=Query, mutation=Mutation)
