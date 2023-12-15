@@ -145,17 +145,17 @@ class Mysql:
 
         if task["title"] is not None:
             fields.append(("title", task["title"], "%s"))
-        if task["description"] is not None:
-            fields.append(("description", task["description"], "%s"))
-        if task["date"] is not None:
-            fields.append(("date", task["date"], "%s"))
-        if task["start_time"] is not None:
-            fields.append(("start_time", task["start_time"], "%s"))
-        if task["end_time"] is not None:
-            fields.append(("end_time", task["end_time"], "%s"))
-        if task["goal"] is not None:
-            fields.append(("goal", task["goal"], "%s"))
-        if task["status"] is not None:
+        if task.get("description") is not None:
+            fields.append(("description", task.get("description"), "%s"))
+        if task.get("date") is not None:
+            fields.append(("date", task.get("date"), "%s"))
+        if task.get("start_time") is not None:
+            fields.append(("start_time", task.get("start_time"), "%s"))
+        if task.get("end_time") is not None:
+            fields.append(("end_time", task.get("end_time"), "%s"))
+        if task.get("goal") is not None:
+            fields.append(("goal", task.get("goal"), "%s"))
+        if task.get("status") is not None:
             fields.append(("status", task["status"].name, "%s"))
 
         columns = ", ".join([field[0] for field in fields])
