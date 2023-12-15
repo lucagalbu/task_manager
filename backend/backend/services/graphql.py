@@ -3,8 +3,8 @@ from typing import Optional
 import strawberry
 from strawberry.fastapi import GraphQLRouter
 from backend.dao.interfaces import DAO
-from backend.services.converters import convertTaskDaoToGraphQL, convertTaskGraphqlToDao
-from backend.services.schemas import Status, TaskInput, TaskOutput
+from backend.services.converters import convertTaskDaoToGraphQL, convertTaskGraphqlToDao, convertTaskUpdateGraphQLToDao
+from backend.services.schemas import Status, TaskInput, TaskOutput, TaskUpdate
 
 
 def getTaskByID(dao: DAO, id: strawberry.ID) -> TaskOutput:
@@ -54,6 +54,37 @@ def createGraphqlApp(dao: DAO):
     def rmTask(id: int) -> TaskOutput:
         removed_id = dao.rmTask(id=id)
         return convertTaskDaoToGraphQL(removed_id)
+    
+    def updateTask(
+            id: int,
+            title: Optional[str] = None,
+            description: Optional[str] = None,
+            date_timestamp: Optional[float] = None,
+            start_timestamp: Optional[float] = None,
+            end_timestamp: Optional[float] = None,
+            goal: Optional[str] = None,
+            status: Optional[Status] = None
+    ) -> TaskOutput:
+        date = datetime.date.fromtimestamp(date_timestamp) if date_timestamp else None
+        start_time = (
+            datetime.date.fromtimestamp(start_timestamp) if start_timestamp else None
+        )
+        end_time = datetime.date.fromtimestamp(end_timestamp) if end_timestamp else None
+        
+        task_ql = TaskUpdate(
+            title=title,
+            description=description,
+            date_timestamp=date,
+            start_timestamp=start_time,
+            end_timestamp=end_time,
+            goal=goal,
+            status=status,
+        )
+
+        task_dao = convertTaskUpdateGraphQLToDao(task_ql=task_ql)
+        task_updated = dao.updateTask(id=id, new_fields=task_dao)
+        return convertTaskDaoToGraphQL(task_updated)
+
 
     @strawberry.type
     class Query:
@@ -69,6 +100,10 @@ def createGraphqlApp(dao: DAO):
 
         rm_task: TaskOutput = strawberry.field(
             resolver=rmTask, description="Remove one task from the database"
+        )
+
+        update_task: TaskOutput = strawberry.field(
+            resolver=updateTask, description="Update an existing task"
         )
 
     schema = strawberry.Schema(query=Query, mutation=Mutation)
