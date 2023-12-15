@@ -33,3 +33,6 @@ class DAO(Protocol):
 
     def rmTask(self, id: int) -> TaskOutput:
         ...
+
+    def updateTask(self, id: int, new_fields: TaskUpdate) -> TaskOutput:
+        ...

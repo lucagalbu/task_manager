@@ -183,3 +183,35 @@ class Mysql:
         self._mydb.commit()
         # TODO: Check that the task doesn't exist, i.e. it has been succesfully deleted
         return task
+    
+    def updateTask(self, id: int, new_fields: TaskUpdate) -> TaskOutput:
+        # TODO: Check if task exists, otherwise check what happens
+        
+        fields = []
+
+        if new_fields.get("title") is not None:
+            fields.append(f"title='{new_fields.get('title')}'")
+        if new_fields.get("description") is not None:
+            fields.append(f"description='{new_fields.get('description')}'")
+        if new_fields.get("date") is not None:
+            fields.append(f"date='{new_fields.get('date')}'")
+        if new_fields.get("start_time") is not None:
+            fields.append(f"start_time='{new_fields.get('start_time')}'")
+        if new_fields.get("end_time") is not None:
+            fields.append(f"end_time='{new_fields.get('end_time')}'")
+        if new_fields.get("goal") is not None:
+            fields.append(f"goal='{new_fields.get('goal')}'")
+        if new_fields.get("status") is not None:
+            fields.append(f"status='{new_fields.get('status')}'")
+
+        fields_str = ", ".join(fields)
+
+        sql_command = f"""UPDATE {self._config.table}
+        SET {fields_str}
+        WHERE id={id};"""
+        self._cursor.execute(sql_command)
+        self._mydb.commit()
+
+        task = self.getTaskByID(id)
+        return task
+
