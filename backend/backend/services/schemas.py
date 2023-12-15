@@ -10,17 +10,18 @@ class Status(Enum):
     PROGRESS = 1
     OPEN = 2
 
-
 @strawberry.type
-class TaskInput:
-    title: str
-    status: Status = Status.OPEN
+class OptionalFields:
     description: Optional[str] = None
     date_timestamp: Optional[datetime.date] = None
     start_timestamp: Optional[datetime.time] = None
     end_timestamp: Optional[datetime.time] = None
     goal: Optional[str] = None
 
+@strawberry.type
+class TaskInput(OptionalFields):
+    title: str
+    status: Status = Status.OPEN
 
 @strawberry.type
 class TaskOutput(TaskInput):
