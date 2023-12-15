@@ -4,7 +4,7 @@ import mysql.connector
 import mysql.connector.connection
 import mysql.connector.cursor
 from dataclasses import dataclass
-from backend.dao.interfaces import TaskInput, TaskOutput
+from backend.dao.interfaces import TaskInput, TaskOutput, TaskUpdate
 
 
 @dataclass
@@ -178,6 +178,7 @@ class Mysql:
 
     def rmTask(self, id: int) -> TaskOutput:
         task = self.getTaskByID(id)
+        # TODO: Check if task exists, otherwise do not proceed
         sql_command = f"DELETE FROM {self._config.table} WHERE id={task['id']}"
         self._cursor.execute(sql_command)
         self._mydb.commit()

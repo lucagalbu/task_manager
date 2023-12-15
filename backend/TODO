@@ -1,0 +1,9 @@
+- Check all TODOS in the sources
+
+- Are the services actually the API?
+- The strawberry types must be in the api layer (or the main file) because this is the interface with the external world. Not the services.
+
+- Can't day, start date and end date be combined in only two time stamps? Start_date and End_date?
+
+- GetTask in DAO must not be mocked
+- Allow only specific origins in CORS and use not localhost but docker compose host names
