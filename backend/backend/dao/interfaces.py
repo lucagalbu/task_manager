@@ -1,7 +1,7 @@
 from typing_extensions import TypedDict
 import datetime
 from enum import Enum
-from typing import Optional, Protocol
+from typing import Protocol
 
 
 class Status(Enum):
@@ -10,18 +10,23 @@ class Status(Enum):
     OPEN = 2
 
 
-class TaskInput(TypedDict):
+class OptionalFields(TypedDict, total=False):
+    description: str
+    date: datetime.date
+    start_time: datetime.date
+    end_time: datetime.date
+    goal: str
+
+class TaskInput(OptionalFields):
     title: str
     status: Status
-    description: Optional[str]
-    date: Optional[datetime.date]
-    start_time: Optional[datetime.time]
-    end_time: Optional[datetime.time]
-    goal: Optional[str]
-
 
 class TaskOutput(TaskInput):
     id: int
+
+class TaskUpdate(OptionalFields, total=False):
+    title: str
+    status: Status
 
 
 class DAO(Protocol):
