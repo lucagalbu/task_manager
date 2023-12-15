@@ -1,14 +1,6 @@
 from typing_extensions import TypedDict
 import datetime
-from enum import Enum
 from typing import Protocol
-
-
-class Status(Enum):
-    DONE = 0
-    PROGRESS = 1
-    OPEN = 2
-
 
 class OptionalFields(TypedDict, total=False):
     description: str
@@ -19,14 +11,14 @@ class OptionalFields(TypedDict, total=False):
 
 class TaskInput(OptionalFields):
     title: str
-    status: Status
+    status: str
 
 class TaskOutput(TaskInput):
     id: int
 
 class TaskUpdate(OptionalFields, total=False):
     title: str
-    status: Status
+    status: str
 
 
 class DAO(Protocol):

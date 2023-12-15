@@ -1,7 +1,6 @@
 from backend.dao.interfaces import (
     TaskInput as TaskInDao,
     TaskOutput as TaskOutDao,
-    Status as StatusDao,
 )
 from backend.services.schemas import (
     TaskOutput as TaskOutQL,
@@ -10,26 +9,26 @@ from backend.services.schemas import (
 )
 
 
-def convertStatusDaoToGraphQL(status_dao: StatusDao) -> StatusQL:
-    if status_dao == StatusDao.DONE:
+def convertStatusDaoToGraphQL(status_dao: str) -> StatusQL:
+    if status_dao == "DONE":
         return StatusQL.DONE
-    elif status_dao == StatusDao.OPEN:
+    elif status_dao == "OPEN":
         return StatusQL.OPEN
-    if status_dao == StatusDao.PROGRESS:
+    if status_dao == "PROGRESS":
         return StatusQL.PROGRESS
     else:
         return StatusQL.PROGRESS
 
 
-def convertStatusGraphQLToDao(status_ql: StatusQL) -> StatusDao:
+def convertStatusGraphQLToDao(status_ql: StatusQL) -> str:
     if status_ql == StatusQL.DONE:
-        return StatusDao.DONE
+        return "DONE"
     elif status_ql == StatusQL.OPEN:
-        return StatusDao.OPEN
+        return "OPEN"
     if status_ql == StatusQL.PROGRESS:
-        return StatusDao.PROGRESS
+        return "PROGRESS"
     else:
-        return StatusDao.PROGRESS
+        return "PROGRESS"
 
 
 def convertTaskDaoToGraphQL(task_dao: TaskOutDao) -> TaskOutQL:
@@ -48,7 +47,7 @@ def convertTaskDaoToGraphQL(task_dao: TaskOutDao) -> TaskOutQL:
 
 
 def convertTaskGraphqlToDao(task_ql: TaskInQL) -> TaskInDao:
-    status: StatusDao = convertStatusGraphQLToDao(task_ql.status)
+    status: str = convertStatusGraphQLToDao(task_ql.status)
 
     task_dao = TaskInDao(title = task_ql.title, status = status)
 

@@ -156,7 +156,7 @@ class Mysql:
         if task.get("goal") is not None:
             fields.append(("goal", task.get("goal"), "%s"))
         if task.get("status") is not None:
-            fields.append(("status", task["status"].name, "%s"))
+            fields.append(("status", task["status"], "%s"))
 
         columns = ", ".join([field[0] for field in fields])
         values = [field[1] for field in fields]
