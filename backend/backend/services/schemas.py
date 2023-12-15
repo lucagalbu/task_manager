@@ -26,3 +26,8 @@ class TaskInput(OptionalFields):
 @strawberry.type
 class TaskOutput(TaskInput):
     id: int
+
+@strawberry.type
+class TaskUpdate(OptionalFields):
+    title: Optional[str]
+    status: Optional[Status]
