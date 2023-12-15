@@ -1,4 +1,3 @@
-import dataclasses
 import logging
 from typing import cast
 import mysql.connector
@@ -144,20 +143,20 @@ class Mysql:
     def addTask(self, task: TaskInput) -> TaskOutput:
         fields = []
 
-        if task.title is not None:
-            fields.append(("title", task.title, "%s"))
-        if task.description is not None:
-            fields.append(("description", task.description, "%s"))
-        if task.date is not None:
-            fields.append(("date", task.date, "%s"))
-        if task.start_time is not None:
-            fields.append(("start_time", task.start_time, "%s"))
-        if task.end_time is not None:
-            fields.append(("end_time", task.end_time, "%s"))
-        if task.goal is not None:
-            fields.append(("goal", task.goal, "%s"))
-        if task.status is not None:
-            fields.append(("status", task.status.name, "%s"))
+        if task["title"] is not None:
+            fields.append(("title", task["title"], "%s"))
+        if task["description"] is not None:
+            fields.append(("description", task["description"], "%s"))
+        if task["date"] is not None:
+            fields.append(("date", task["date"], "%s"))
+        if task["start_time"] is not None:
+            fields.append(("start_time", task["start_time"], "%s"))
+        if task["end_time"] is not None:
+            fields.append(("end_time", task["end_time"], "%s"))
+        if task["goal"] is not None:
+            fields.append(("goal", task["goal"], "%s"))
+        if task["status"] is not None:
+            fields.append(("status", task["status"].name, "%s"))
 
         columns = ", ".join([field[0] for field in fields])
         values = [field[1] for field in fields]
@@ -179,7 +178,7 @@ class Mysql:
 
     def rmTask(self, id: int) -> TaskOutput:
         task = self.getTaskByID(id)
-        sql_command = f"DELETE FROM {self._config.table} WHERE id={task.id}"
+        sql_command = f"DELETE FROM {self._config.table} WHERE id={task['id']}"
         self._cursor.execute(sql_command)
         self._mydb.commit()
         # TODO: Check that the task doesn't exist, i.e. it has been succesfully deleted

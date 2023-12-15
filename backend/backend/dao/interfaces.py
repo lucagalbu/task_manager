@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from typing_extensions import TypedDict
 import datetime
 from enum import Enum
 from typing import Optional, Protocol
@@ -10,8 +10,7 @@ class Status(Enum):
     OPEN = 2
 
 
-@dataclass
-class TaskInput:
+class TaskInput(TypedDict):
     title: str
     status: Status
     description: Optional[str]
@@ -21,7 +20,6 @@ class TaskInput:
     goal: Optional[str]
 
 
-@dataclass
 class TaskOutput(TaskInput):
     id: int
 

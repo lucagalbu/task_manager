@@ -33,16 +33,16 @@ def convertStatusGraphQLToDao(status_ql: StatusQL) -> StatusDao:
 
 
 def convertTaskDaoToGraphQL(task_dao: TaskOutDao) -> TaskOutQL:
-    status: StatusQL = convertStatusDaoToGraphQL(task_dao.status)
+    status: StatusQL = convertStatusDaoToGraphQL(task_dao["status"])
 
     return TaskOutQL(
-        id=task_dao.id,
-        title=task_dao.title,
-        description=task_dao.description,
-        date_timestamp=task_dao.date,
-        start_timestamp=task_dao.start_time,
-        end_timestamp=task_dao.end_time,
-        goal=task_dao.goal,
+        id=task_dao["id"],
+        title=task_dao["title"],
+        description=task_dao["description"],
+        date_timestamp=task_dao["date"],
+        start_timestamp=task_dao["start_time"],
+        end_timestamp=task_dao["end_time"],
+        goal=task_dao["goal"],
         status=status,
     )
 
