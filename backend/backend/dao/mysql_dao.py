@@ -158,9 +158,9 @@ class Mysql:
             Dictiornary containing the task data as returned by MySQL.
         """
 
-        if "start_time" in fields:
+        if fields.get("start_time") is not None:
             fields["start_time"] = (datetime.min + fields["start_time"]).time()
-        if "end_time" in fields:
+        if fields.get("end_time") is not None:
             fields["end_time"] = (datetime.min + fields["end_time"]).time()
 
         task = TaskOutput(**fields)
