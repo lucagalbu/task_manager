@@ -3,7 +3,11 @@ from typing import Optional
 import strawberry
 from strawberry.fastapi import GraphQLRouter
 from backend.dao.interfaces import DAO
-from backend.services.converters import convertTaskDaoToGraphQL, convertTaskGraphqlToDao, convertTaskUpdateGraphQLToDao
+from backend.services.converters import (
+    convertTaskDaoToGraphQL,
+    convertTaskGraphqlToDao,
+    convertTaskUpdateGraphQLToDao,
+)
 from backend.services.schemas import Status, TaskInput, TaskOutput, TaskUpdate
 
 
@@ -39,9 +43,15 @@ def createGraphqlApp(dao: DAO):
         status: Status = Status.OPEN,
     ) -> TaskOutput:
         start_time = (
-            datetime.datetime.strptime(start_timestamp, "%H:%M").time() if start_timestamp else None
+            datetime.datetime.strptime(start_timestamp, "%H:%M").time()
+            if start_timestamp
+            else None
         )
-        end_time = datetime.datetime.strptime(end_timestamp, "%H:%M").time() if end_timestamp else None
+        end_time = (
+            datetime.datetime.strptime(end_timestamp, "%H:%M").time()
+            if end_timestamp
+            else None
+        )
 
         task_ql = TaskInput(
             title=title,
@@ -59,23 +69,29 @@ def createGraphqlApp(dao: DAO):
     def rmTask(id: int) -> TaskOutput:
         removed_id = dao.rmTask(id=id)
         return convertTaskDaoToGraphQL(removed_id)
-    
+
     def updateTask(
-            id: int,
-            title: Optional[str] = None,
-            description: Optional[str] = None,
-            date_timestamp: Optional[float] = None,
-            start_timestamp: Optional[str] = None,
-            end_timestamp: Optional[str] = None,
-            goal: Optional[str] = None,
-            status: Optional[Status] = None
+        id: int,
+        title: Optional[str] = None,
+        description: Optional[str] = None,
+        date_timestamp: Optional[float] = None,
+        start_timestamp: Optional[str] = None,
+        end_timestamp: Optional[str] = None,
+        goal: Optional[str] = None,
+        status: Optional[Status] = None,
     ) -> TaskOutput:
         date = datetime.date.fromtimestamp(date_timestamp) if date_timestamp else None
         start_time = (
-            datetime.datetime.strptime(start_timestamp, "%H:%M").time() if start_timestamp else None
+            datetime.datetime.strptime(start_timestamp, "%H:%M").time()
+            if start_timestamp
+            else None
         )
-        end_time = datetime.datetime.strptime(end_timestamp, "%H:%M").time() if end_timestamp else None
-        
+        end_time = (
+            datetime.datetime.strptime(end_timestamp, "%H:%M").time()
+            if end_timestamp
+            else None
+        )
+
         task_ql = TaskUpdate(
             title=title,
             description=description,
@@ -89,7 +105,6 @@ def createGraphqlApp(dao: DAO):
         task_dao = convertTaskUpdateGraphQLToDao(task_ql=task_ql)
         task_updated = dao.updateTask(id=id, new_fields=task_dao)
         return convertTaskDaoToGraphQL(task_updated)
-
 
     @strawberry.type
     class Query:

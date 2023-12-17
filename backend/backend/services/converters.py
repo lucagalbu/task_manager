@@ -34,17 +34,28 @@ def convertStatusGraphQLToDao(status_ql: StatusQL) -> str:
 
 
 def convertTaskUpdateGraphQLToDao(task_ql: TaskUpdateQL) -> TaskUpdateDao:
-    status_dao = convertStatusGraphQLToDao(task_ql.status) if task_ql.status is not None else None
+    status_dao = (
+        convertStatusGraphQLToDao(task_ql.status)
+        if task_ql.status is not None
+        else None
+    )
 
     task_dao: TaskUpdateDao = {}
 
-    if status_dao is not None: task_dao["status"] = status_dao
-    if task_ql.title is not None: task_dao["title"] = task_ql.title
-    if task_ql.description is not None: task_dao["description"] = task_ql.description
-    if task_ql.date_timestamp is not None: task_dao["date"] = task_ql.date_timestamp
-    if task_ql.start_timestamp is not None: task_dao["start_time"] = task_ql.start_timestamp
-    if task_ql.end_timestamp is not None: task_dao["end_time"] = task_ql.end_timestamp
-    if task_ql.goal is not None: task_dao["goal"] = task_ql.goal
+    if status_dao is not None:
+        task_dao["status"] = status_dao
+    if task_ql.title is not None:
+        task_dao["title"] = task_ql.title
+    if task_ql.description is not None:
+        task_dao["description"] = task_ql.description
+    if task_ql.date_timestamp is not None:
+        task_dao["date"] = task_ql.date_timestamp
+    if task_ql.start_timestamp is not None:
+        task_dao["start_time"] = task_ql.start_timestamp
+    if task_ql.end_timestamp is not None:
+        task_dao["end_time"] = task_ql.end_timestamp
+    if task_ql.goal is not None:
+        task_dao["goal"] = task_ql.goal
 
     return task_dao
 
@@ -67,12 +78,17 @@ def convertTaskDaoToGraphQL(task_dao: TaskOutDao) -> TaskOutQL:
 def convertTaskGraphqlToDao(task_ql: TaskInQL) -> TaskInDao:
     status: str = convertStatusGraphQLToDao(task_ql.status)
 
-    task_dao = TaskInDao(title = task_ql.title, status = status)
+    task_dao = TaskInDao(title=task_ql.title, status=status)
 
-    if task_ql.description is not None: task_dao["description"] = task_ql.description
-    if task_ql.date_timestamp is not None: task_dao["date"] = task_ql.date_timestamp
-    if task_ql.start_timestamp is not None: task_dao["start_time"] = task_ql.start_timestamp
-    if task_ql.end_timestamp is not None: task_dao["end_time"] = task_ql.end_timestamp
-    if task_ql.goal is not None: task_dao["goal"] = task_ql.goal
+    if task_ql.description is not None:
+        task_dao["description"] = task_ql.description
+    if task_ql.date_timestamp is not None:
+        task_dao["date"] = task_ql.date_timestamp
+    if task_ql.start_timestamp is not None:
+        task_dao["start_time"] = task_ql.start_timestamp
+    if task_ql.end_timestamp is not None:
+        task_dao["end_time"] = task_ql.end_timestamp
+    if task_ql.goal is not None:
+        task_dao["goal"] = task_ql.goal
 
     return task_dao

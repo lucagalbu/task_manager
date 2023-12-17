@@ -136,12 +136,12 @@ class Mysql:
     @staticmethod
     def convertSqlToTask(**fields) -> TaskOutput:
         if "start_time" in fields:
-            fields["start_time"] =  (datetime.min + fields["start_time"]).time()
+            fields["start_time"] = (datetime.min + fields["start_time"]).time()
         if "end_time" in fields:
-            fields["end_time"] =  (datetime.min + fields["end_time"]).time()
+            fields["end_time"] = (datetime.min + fields["end_time"]).time()
 
         task = TaskOutput(**fields)
-        return(task)
+        return task
 
     def getAllTasks(self) -> list[TaskOutput]:
         sql_command = f"SELECT  * FROM {self._config.table}"
@@ -195,10 +195,10 @@ class Mysql:
         self._mydb.commit()
         # TODO: Check that the task doesn't exist, i.e. it has been succesfully deleted
         return task
-    
+
     def updateTask(self, id: int, new_fields: TaskUpdate) -> TaskOutput:
         # TODO: Check if task exists, otherwise check what happens
-        
+
         fields = []
 
         if new_fields.get("title") is not None:
@@ -226,4 +226,3 @@ class Mysql:
 
         task = self.getTaskByID(id)
         return task
-

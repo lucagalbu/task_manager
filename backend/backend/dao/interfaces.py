@@ -2,6 +2,7 @@ from typing_extensions import TypedDict
 import datetime
 from typing import Protocol
 
+
 class OptionalFields(TypedDict, total=False):
     description: str
     date: datetime.date
@@ -9,12 +10,15 @@ class OptionalFields(TypedDict, total=False):
     end_time: datetime.time
     goal: str
 
+
 class TaskInput(OptionalFields):
     title: str
     status: str
 
+
 class TaskOutput(TaskInput):
     id: int
+
 
 class TaskUpdate(OptionalFields, total=False):
     title: str
