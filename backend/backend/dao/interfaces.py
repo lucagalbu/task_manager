@@ -40,6 +40,7 @@ class TaskUpdate(OptionalFields, total=False):
 class DAO(Protocol):
     """Protocol specifying the methods that a DAO must provide."""
 
+    # pylint: disable=unnecessary-ellipsis
 
     def getTaskByID(self, id: int) -> TaskOutput:
         """Return a specific task from the database.
