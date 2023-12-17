@@ -99,7 +99,7 @@ class Mysql:
     # TODO: Use schema validation using the Task type
     # TODO: Can MySQL use enum for status?
     def __create_tasks_table(self):
-        id = "id INT AUTO_INCREMENT PRIMARY KEY"
+        task_id = "id INT AUTO_INCREMENT PRIMARY KEY"
         title = "title VARCHAR(255) NOT NULL"
         description = "description TEXT"
         date = "date TIMESTAMP"
@@ -108,7 +108,7 @@ class Mysql:
         goal = "goal VARCHAR(255)"
         status = "status VARCHAR(50) NOT NULL"
         schema = ", ".join(
-            [id, title, description, date, start_time, end_time, goal, status]
+            [task_id, title, description, date, start_time, end_time, goal, status]
         )
 
         self._cursor.execute(f"CREATE TABLE {self._config.table} ({schema})")
@@ -126,15 +126,15 @@ class Mysql:
         logging.info("Closing database connection")
         self._mydb.close()
 
-    def get_task_by_id(self, id: int) -> TaskOutput:
+    def get_task_by_id(self, task_id: int) -> TaskOutput:
         """Return a specific task from the database.
         Parameters
         ----------
-        id: int
+        task_id: int
             Id of the task to be retrieved.
         """
 
-        sql_command = f"SELECT  * FROM {self._config.table} WHERE id={id}"
+        sql_command = f"SELECT  * FROM {self._config.table} WHERE id={task_id}"
         self._cursor.execute(sql_command)
         result = self._cursor.fetchall()
 
@@ -214,23 +214,23 @@ class Mysql:
         self._cursor.execute(operation=sql_command, params=values)
         self._mydb.commit()
 
-        id = self._cursor.getlastrowid()
-        if id is None or self._cursor.rowcount != 1:
+        task_id = self._cursor.getlastrowid()
+        if task_id is None or self._cursor.rowcount != 1:
             raise RuntimeError("Unable to add key to the database")
 
-        added_task = self.get_task_by_id(id)
+        added_task = self.get_task_by_id(task_id)
         return added_task
 
-    def rm_task(self, id: int) -> TaskOutput:
+    def rm_task(self, task_id: int) -> TaskOutput:
         """Remove a task from the database and return it.
 
         Parameters
         ----------
-        id: int
+        task_id: int
             Id of the task to be removed.
         """
 
-        task = self.get_task_by_id(id)
+        task = self.get_task_by_id(task_id)
         # TODO: Check if task exists, otherwise do not proceed
         sql_command = f"DELETE FROM {self._config.table} WHERE id={task['id']}"
         self._cursor.execute(sql_command)
@@ -238,12 +238,12 @@ class Mysql:
         # TODO: Check that the task doesn't exist, i.e. it has been succesfully deleted
         return task
 
-    def update_task(self, id: int, new_fields: TaskUpdate) -> TaskOutput:
+    def update_task(self, task_id: int, new_fields: TaskUpdate) -> TaskOutput:
         """Update a task in the database and return the updated task.
 
         Parameters
         ----------
-        id: int
+        task_id: int
             Id of the task to be updated.
         new_fields: TypedDict (TaskUpdate)
             Dictionary with the fields to be updated. All and only the fields in the
@@ -274,9 +274,9 @@ class Mysql:
 
         sql_command = f"""UPDATE {self._config.table}
         SET {fields_str}
-        WHERE id={id};"""
+        WHERE id={task_id};"""
         self._cursor.execute(sql_command)
         self._mydb.commit()
 
-        task = self.get_task_by_id(id)
+        task = self.get_task_by_id(task_id)
         return task

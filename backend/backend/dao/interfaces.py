@@ -42,11 +42,11 @@ class DAO(Protocol):
 
     # pylint: disable=unnecessary-ellipsis
 
-    def get_task_by_id(self, id: int) -> TaskOutput:
+    def get_task_by_id(self, task_id: int) -> TaskOutput:
         """Return a specific task from the database.
         Parameters
         ----------
-        id: int
+        task_id: int
             Id of the task to be retrieved.
         """
         ...
@@ -66,22 +66,22 @@ class DAO(Protocol):
         """
         ...
 
-    def rm_task(self, id: int) -> TaskOutput:
+    def rm_task(self, task_id: int) -> TaskOutput:
         """Remove a task from the database and return it.
 
         Parameters
         ----------
-        id: int
+        task_id: int
             Id of the task to be removed.
         """
         ...
 
-    def update_task(self, id: int, new_fields: TaskUpdate) -> TaskOutput:
+    def update_task(self, task_id: int, new_fields: TaskUpdate) -> TaskOutput:
         """Update a task in the database and return the updated task.
 
         Parameters
         ----------
-        id: int
+        task_id: int
             Id of the task to be updated.
         new_fields: TypedDict (TaskUpdate)
             Dictionary with the fields to be updated. All and only the fields in the

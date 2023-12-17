@@ -13,18 +13,18 @@ from backend.services.converters import (
 from backend.services.schemas import Status, TaskInput, TaskOutput, TaskUpdate
 
 
-def get_task_by_id(dao: DAO, id: strawberry.ID) -> TaskOutput:
+def get_task_by_id(dao: DAO, task_id: strawberry.ID) -> TaskOutput:
     """Asks the DAO to return a task with a specific ID.
 
     Parameters
     ----------
     dao: class (DAO)
         Data Access Object (DAO). See the DAO protocol for more information.
-    id: int
+    task_id: int
         Id of the task to be retrieved.
     """
 
-    task_dao = dao.get_task_by_id(int(id))
+    task_dao = dao.get_task_by_id(int(task_id))
     task_ql = convertTaskDaoToGraphQL(task_dao)
     return task_ql
 
@@ -52,18 +52,18 @@ def create_graphql_app(dao: DAO):
         Data Access Object (DAO). See the DAO protocol for more information.
     """
 
-    def get_tasks(id: Optional[strawberry.ID] = None) -> list[TaskOutput]:
+    def get_tasks(task_id: Optional[strawberry.ID] = None) -> list[TaskOutput]:
         """Query to return tasks from the database.
 
         Parameters
         ----------
-        id: int
+        task_id: int
             Id of the task to be retrieved. If None, all tasks are retrieved.
         """
 
         tasks: list[TaskOutput] = []
-        if id is not None:
-            tasks = [get_task_by_id(dao, id)]
+        if task_id is not None:
+            tasks = [get_task_by_id(dao, task_id)]
         else:
             tasks = get_all_tasks(dao)
 
@@ -124,20 +124,20 @@ def create_graphql_app(dao: DAO):
         added_task = dao.add_task(task_dao)
         return convertTaskDaoToGraphQL(added_task)
 
-    def rm_task(id: int) -> TaskOutput:
+    def rm_task(task_id: int) -> TaskOutput:
         """Mutation to remove a task to the database. It returns the deleted task.
 
         Parameters
         ----------
-        id: int
+        task_id: int
             Id of the task to be removed.
         """
 
-        removed_id = dao.rm_task(id=id)
+        removed_id = dao.rm_task(task_id=task_id)
         return convertTaskDaoToGraphQL(removed_id)
 
     def update_task(
-        id: int,
+        task_id: int,
         title: Optional[str] = None,
         description: Optional[str] = None,
         date_timestamp: Optional[float] = None,
@@ -153,7 +153,7 @@ def create_graphql_app(dao: DAO):
 
         Parameters
         ----------
-        id: int
+        task_id: int
             Id of the task to be updated.
         title: str
             Optional, new title of the task.
@@ -195,7 +195,7 @@ def create_graphql_app(dao: DAO):
         )
 
         task_dao = convertTaskUpdateGraphQLToDao(task_ql=task_ql)
-        task_updated = dao.update_task(id=id, new_fields=task_dao)
+        task_updated = dao.update_task(task_id=task_id, new_fields=task_dao)
         return convertTaskDaoToGraphQL(task_updated)
 
     @strawberry.type
