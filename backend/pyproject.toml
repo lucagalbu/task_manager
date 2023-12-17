@@ -12,7 +12,7 @@ mysql-connector-python = "^8.1.0"
 strawberry-graphql = {extras = ["fastapi"], version = "^0.209.6"}
 
 [tool.poetry.scripts]
-start = "backend.main:startServer"
+start = "backend.main:start_server"
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = {extras = ["standard"], version = "^0.23.2"}
