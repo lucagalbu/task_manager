@@ -103,3 +103,23 @@ export const addTask = async function (
   const converted_task = graphqlToTaskInput(added_task_ql)
   return converted_task
 }
+
+export const deleteTask = async function (mutation_name: string, id: Number): Promise<TaskInput | null> {
+  const mutation = `mutation ${mutation_name} {
+    ${GRAPHQL_DELETE_NAME}(
+      taskId:${id}
+    ) {
+      id
+      title
+    } 
+  }`
+  const response = await makeGraphQLRequest(mutation)
+  if (!response.ok) {
+    return null
+  }
+
+  const response_json: GraphQLRespDelete = await response.json()
+  const tasks_ql = response_json.data[GRAPHQL_DELETE_NAME]
+  const converted_task = graphqlToTaskInput(tasks_ql)
+  return converted_task
+}
