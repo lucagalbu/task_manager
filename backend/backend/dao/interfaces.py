@@ -42,7 +42,7 @@ class DAO(Protocol):
 
     # pylint: disable=unnecessary-ellipsis
 
-    def getTaskByID(self, id: int) -> TaskOutput:
+    def get_task_by_id(self, id: int) -> TaskOutput:
         """Return a specific task from the database.
         Parameters
         ----------
@@ -51,11 +51,11 @@ class DAO(Protocol):
         """
         ...
 
-    def getAllTasks(self) -> list[TaskOutput]:
+    def get_all_tasks(self) -> list[TaskOutput]:
         """Return all the tasks in the database."""
         ...
 
-    def addTask(self, task: TaskInput) -> TaskOutput:
+    def add_task(self, task: TaskInput) -> TaskOutput:
         """Add a new task to the database and return it.
 
         Parameters
@@ -66,7 +66,7 @@ class DAO(Protocol):
         """
         ...
 
-    def rmTask(self, id: int) -> TaskOutput:
+    def rm_task(self, id: int) -> TaskOutput:
         """Remove a task from the database and return it.
 
         Parameters
@@ -76,7 +76,7 @@ class DAO(Protocol):
         """
         ...
 
-    def updateTask(self, id: int, new_fields: TaskUpdate) -> TaskOutput:
+    def update_task(self, id: int, new_fields: TaskUpdate) -> TaskOutput:
         """Update a task in the database and return the updated task.
 
         Parameters

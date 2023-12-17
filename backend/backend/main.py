@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.dao.interfaces import DAO
 from backend.dao.mysql import Mysql, MysqlConfig
-from backend.services.graphql import createGraphqlApp
+from backend.services.graphql import create_graphql_app
 
 
 def initDao() -> DAO:
@@ -26,7 +26,7 @@ logging.basicConfig(encoding="utf-8", level=logging.DEBUG)
 
 app = FastAPI()
 dao = initDao()
-graphql_app = createGraphqlApp(dao=dao)
+graphql_app = create_graphql_app(dao=dao)
 
 app.add_middleware(
     CORSMiddleware,

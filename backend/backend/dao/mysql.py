@@ -36,26 +36,26 @@ class Mysql:
         self.__connect()
 
         logging.info(f"Checking existence of tasks database '{self._config.database}'")
-        database_exists = self.__checkDatabaseExists()
+        database_exists = self.__check_database_exists()
 
         if not database_exists:
             logging.info("Database not found. Creating it")
-            self.__createTasksDatabase()
-            if not self.__checkDatabaseExists():
+            self.__create_tasks_database()
+            if not self.__check_database_exists():
                 raise RuntimeError("Unable to create the database")
         else:
             logging.info("Database already existing")
 
         logging.info(f"Switching to database {self._config.database}")
-        self.__switchToTaksDatabase()
+        self.__switch_to_taks_database()
 
         logging.info(f"Checking existence of tasks table '{self._config.table}'")
-        table_exists = self.__checkTableExists()
+        table_exists = self.__check_table_exists()
 
         if not table_exists:
             logging.info("Table not found. Creating it")
-            self.__createTasksTable()
-            if not self.__checkTableExists():
+            self.__create_tasks_table()
+            if not self.__check_table_exists():
                 raise RuntimeError("Unable to create the table")
         else:
             logging.info("Table already existing")
@@ -81,10 +81,10 @@ class Mysql:
                 f"Expected a MySQLConnection connection, returned {type(connection)}"
             )
 
-    def __createTasksDatabase(self):
+    def __create_tasks_database(self):
         self._cursor.execute(f"CREATE DATABASE {self._config.database}")
 
-    def __checkDatabaseExists(self):
+    def __check_database_exists(self):
         self._cursor.execute("SHOW DATABASES")
         databases = [
             result["Database"]
@@ -93,12 +93,12 @@ class Mysql:
         ]
         return self._config.database in databases
 
-    def __switchToTaksDatabase(self):
+    def __switch_to_taks_database(self):
         self._cursor.execute(f"USE {self._config.database};")
 
     # TODO: Use schema validation using the Task type
     # TODO: Can MySQL use enum for status?
-    def __createTasksTable(self):
+    def __create_tasks_table(self):
         id = "id INT AUTO_INCREMENT PRIMARY KEY"
         title = "title VARCHAR(255) NOT NULL"
         description = "description TEXT"
@@ -113,7 +113,7 @@ class Mysql:
 
         self._cursor.execute(f"CREATE TABLE {self._config.table} ({schema})")
 
-    def __checkTableExists(self):
+    def __check_table_exists(self):
         self._cursor.execute("SHOW TABLES")
         tables = [
             result[f"Tables_in_{self._config.database}"]
@@ -126,7 +126,7 @@ class Mysql:
         logging.info("Closing database connection")
         self._mydb.close()
 
-    def getTaskByID(self, id: int) -> TaskOutput:
+    def get_task_by_id(self, id: int) -> TaskOutput:
         """Return a specific task from the database.
         Parameters
         ----------
@@ -147,7 +147,7 @@ class Mysql:
         return task
 
     @staticmethod
-    def convertSqlToTask(**fields) -> TaskOutput:
+    def convert_sql_to_task(**fields) -> TaskOutput:
         """Convert a Task as stored in the database to the internal task representation.
 
         For example, it takes care to correctly convert the dates and times.
@@ -166,17 +166,17 @@ class Mysql:
         task = TaskOutput(**fields)
         return task
 
-    def getAllTasks(self) -> list[TaskOutput]:
+    def get_all_tasks(self) -> list[TaskOutput]:
         """Return all the tasks in the database."""
 
         sql_command = f"SELECT  * FROM {self._config.table}"
         self._cursor.execute(sql_command)
         results = self._cursor.fetchall()
 
-        tasks = [Mysql.convertSqlToTask(**arg) for arg in results if arg is not None]
+        tasks = [Mysql.convert_sql_to_task(**arg) for arg in results if arg is not None]
         return tasks
 
-    def addTask(self, task: TaskInput) -> TaskOutput:
+    def add_task(self, task: TaskInput) -> TaskOutput:
         """Add a new task to the database and return it.
 
         Parameters
@@ -218,10 +218,10 @@ class Mysql:
         if id is None or self._cursor.rowcount != 1:
             raise RuntimeError("Unable to add key to the database")
 
-        added_task = self.getTaskByID(id)
+        added_task = self.get_task_by_id(id)
         return added_task
 
-    def rmTask(self, id: int) -> TaskOutput:
+    def rm_task(self, id: int) -> TaskOutput:
         """Remove a task from the database and return it.
 
         Parameters
@@ -230,7 +230,7 @@ class Mysql:
             Id of the task to be removed.
         """
 
-        task = self.getTaskByID(id)
+        task = self.get_task_by_id(id)
         # TODO: Check if task exists, otherwise do not proceed
         sql_command = f"DELETE FROM {self._config.table} WHERE id={task['id']}"
         self._cursor.execute(sql_command)
@@ -238,7 +238,7 @@ class Mysql:
         # TODO: Check that the task doesn't exist, i.e. it has been succesfully deleted
         return task
 
-    def updateTask(self, id: int, new_fields: TaskUpdate) -> TaskOutput:
+    def update_task(self, id: int, new_fields: TaskUpdate) -> TaskOutput:
         """Update a task in the database and return the updated task.
 
         Parameters
@@ -278,5 +278,5 @@ class Mysql:
         self._cursor.execute(sql_command)
         self._mydb.commit()
 
-        task = self.getTaskByID(id)
+        task = self.get_task_by_id(id)
         return task
