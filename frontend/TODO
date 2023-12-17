@@ -1,0 +1,5 @@
+- times are not working. Transform dates and times to timestamps
+
+- In backend and frontend treat date also as time stamp float
+- Add aria props
+- Set font size (e.g. h1 is too big, see modal title)
