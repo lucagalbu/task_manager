@@ -35,7 +35,7 @@ class Mysql:
         logging.info("Connecting to database")
         self.__connect()
 
-        logging.info(f"Checking existence of tasks database '{self._config.database}'")
+        logging.info("Checking existence of tasks database '%s'", self._config.database)
         database_exists = self.__check_database_exists()
 
         if not database_exists:
@@ -46,10 +46,10 @@ class Mysql:
         else:
             logging.info("Database already existing")
 
-        logging.info(f"Switching to database {self._config.database}")
+        logging.info("Switching to database '%s'", self._config.database)
         self.__switch_to_taks_database()
 
-        logging.info(f"Checking existence of tasks table '{self._config.table}'")
+        logging.info("Checking existence of tasks table '%s'", self._config.table)
         table_exists = self.__check_table_exists()
 
         if not table_exists:
