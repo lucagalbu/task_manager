@@ -1,8 +1,8 @@
 """Module that contains the internal data formats used in this backend."""
 
-from typing_extensions import TypedDict
 import datetime
 from typing import Protocol
+from typing_extensions import TypedDict
 
 
 class OptionalFields(TypedDict, total=False):

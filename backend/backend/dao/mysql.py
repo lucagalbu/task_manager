@@ -2,11 +2,11 @@
 
 from datetime import datetime
 import logging
+from dataclasses import dataclass
 from typing import cast
 import mysql.connector
 import mysql.connector.connection
 import mysql.connector.cursor
-from dataclasses import dataclass
 from backend.dao.interfaces import TaskInput, TaskOutput, TaskUpdate
 
 

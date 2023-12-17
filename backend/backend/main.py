@@ -1,8 +1,8 @@
 """Entrypoint of the backend"""
 
-import uvicorn
 import logging
 import os
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.dao.interfaces import DAO
