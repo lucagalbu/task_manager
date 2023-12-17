@@ -6,7 +6,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.dao.interfaces import DAO
-from backend.dao.mysql import Mysql, MysqlConfig
+from backend.dao.mysql_dao import Mysql, MysqlConfig
 from backend.services.graphql import create_graphql_app
 
 
