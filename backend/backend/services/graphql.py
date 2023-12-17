@@ -69,6 +69,7 @@ def createGraphqlApp(dao: DAO):
 
         return tasks
 
+    # TODO: start and end times are not timestamp anymore
     def addTask(
         title: str,
         description: Optional[str] = None,
