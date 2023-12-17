@@ -1,3 +1,5 @@
+""""Module with converters between the DAO and the API data formats"""
+
 from backend.dao.interfaces import (
     TaskInput as TaskInDao,
     TaskUpdate as TaskUpdateDao,

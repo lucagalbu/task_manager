@@ -1,3 +1,5 @@
+"""Entrypoint of the backend"""
+
 import uvicorn
 import logging
 import os

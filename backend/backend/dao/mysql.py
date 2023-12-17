@@ -1,3 +1,5 @@
+"""Module that contains the DAO implementation based on MySQL"""
+
 from datetime import datetime
 import logging
 from typing import cast
@@ -10,6 +12,8 @@ from backend.dao.interfaces import TaskInput, TaskOutput, TaskUpdate
 
 @dataclass
 class MysqlConfig:
+    """Configuration for the MySQL database."""
+
     password: str
     host: str = "localhost"
     user: str = "root"
@@ -19,6 +23,8 @@ class MysqlConfig:
 
 
 class Mysql:
+    """Implementation of the DAO using MySQL as database."""
+
     _mydb: mysql.connector.connection.MySQLConnection
     _cursor: mysql.connector.cursor.MySQLCursorDict
     _config: MysqlConfig
@@ -121,6 +127,13 @@ class Mysql:
         self._mydb.close()
 
     def getTaskByID(self, id: int) -> TaskOutput:
+        """Return a specific task from the database.
+        Parameters
+        ----------
+        id: int
+            Id of the task to be retrieved.
+        """
+
         sql_command = f"SELECT  * FROM {self._config.table} WHERE id={id}"
         self._cursor.execute(sql_command)
         result = self._cursor.fetchall()
@@ -135,6 +148,16 @@ class Mysql:
 
     @staticmethod
     def convertSqlToTask(**fields) -> TaskOutput:
+        """Convert a Task as stored in the database to the internal task representation.
+
+        For example, it takes care to correctly convert the dates and times.
+
+        Parameters
+        ----------
+        fields: dict
+            Dictiornary containing the task data as returned by MySQL.
+        """
+
         if "start_time" in fields:
             fields["start_time"] = (datetime.min + fields["start_time"]).time()
         if "end_time" in fields:
@@ -144,6 +167,8 @@ class Mysql:
         return task
 
     def getAllTasks(self) -> list[TaskOutput]:
+        """Return all the tasks in the database."""
+
         sql_command = f"SELECT  * FROM {self._config.table}"
         self._cursor.execute(sql_command)
         results = self._cursor.fetchall()
@@ -152,6 +177,15 @@ class Mysql:
         return tasks
 
     def addTask(self, task: TaskInput) -> TaskOutput:
+        """Add a new task to the database and return it.
+
+        Parameters
+        ----------
+        task: TypedDict (TaskInput)
+            Dictionary containing the information about the new task.
+            See the typed dictionary TaskInput for more details on the fields.
+        """
+
         fields = []
 
         if task["title"] is not None:
@@ -188,6 +222,14 @@ class Mysql:
         return added_task
 
     def rmTask(self, id: int) -> TaskOutput:
+        """Remove a task from the database and return it.
+
+        Parameters
+        ----------
+        id: int
+            Id of the task to be removed.
+        """
+
         task = self.getTaskByID(id)
         # TODO: Check if task exists, otherwise do not proceed
         sql_command = f"DELETE FROM {self._config.table} WHERE id={task['id']}"
@@ -197,6 +239,18 @@ class Mysql:
         return task
 
     def updateTask(self, id: int, new_fields: TaskUpdate) -> TaskOutput:
+        """Update a task in the database and return the updated task.
+
+        Parameters
+        ----------
+        id: int
+            Id of the task to be updated.
+        new_fields: TypedDict (TaskUpdate)
+            Dictionary with the fields to be updated. All and only the fields in the
+            dictionary are updated. See the typed dictionary TaskUpdate for more details on
+            the fields.
+        """
+
         # TODO: Check if task exists, otherwise check what happens
 
         fields = []
