@@ -126,26 +126,6 @@ class Mysql:
         logging.info("Closing database connection")
         self._mydb.close()
 
-    def get_task_by_id(self, task_id: int) -> TaskOutput:
-        """Return a specific task from the database.
-        Parameters
-        ----------
-        task_id: int
-            Id of the task to be retrieved.
-        """
-
-        sql_command = f"SELECT  * FROM {self._config.table} WHERE id={task_id}"
-        self._cursor.execute(sql_command)
-        result = self._cursor.fetchall()
-
-        if len(result) != 1:
-            logging.warning(
-                "Multiple tasks with the same id found. Using the first one"
-            )
-
-        task = TaskOutput(**result[0])  # type: ignore
-        return task
-
     @staticmethod
     def convert_sql_to_task(**fields) -> TaskOutput:
         """Convert a Task as stored in the database to the internal task representation.
@@ -164,6 +144,38 @@ class Mysql:
             fields["end_time"] = (datetime.min + fields["end_time"]).time()
 
         task = TaskOutput(**fields)
+        return task
+
+    def get_task_by_id(self, task_id: int) -> TaskOutput:
+        """Return a specific task from the database.
+        Parameters
+        ----------
+        task_id: int
+            Id of the task to be retrieved.
+        """
+
+        sql_command = f"SELECT  * FROM {self._config.table} WHERE id={task_id}"
+        self._cursor.execute(sql_command)
+        result = self._cursor.fetchall()
+
+        # TODO: Better warning handling. This should be an error, not to give confusing replies.
+        if len(result) > 1:
+            logging.warning(
+                "Multiple tasks with the same id found. Using the first one"
+            )
+
+        result = result[0]
+
+        # TODO: better error handling. If task is not present, do not return simply a fake task.
+        if result is None:
+            logging.error("No task retrieved with the specified id.")
+
+        task = (
+            Mysql.convert_sql_to_task(**result)
+            if result is not None
+            else TaskOutput(id=0, title="", status="open")
+        )
+
         return task
 
     def get_all_tasks(self) -> list[TaskOutput]:
