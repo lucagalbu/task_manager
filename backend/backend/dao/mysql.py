@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 from typing import cast
 import mysql.connector
@@ -96,8 +97,8 @@ class Mysql:
         title = "title VARCHAR(255) NOT NULL"
         description = "description TEXT"
         date = "date TIMESTAMP"
-        start_time = "start_time TIMESTAMP"
-        end_time = "end_time TIMESTAMP"
+        start_time = "start_time TIME"
+        end_time = "end_time TIME"
         goal = "goal VARCHAR(255)"
         status = "status VARCHAR(50) NOT NULL"
         schema = ", ".join(
@@ -132,12 +133,22 @@ class Mysql:
         task = TaskOutput(**result[0])  # type: ignore
         return task
 
+    @staticmethod
+    def convertSqlToTask(**fields) -> TaskOutput:
+        if "start_time" in fields:
+            fields["start_time"] =  (datetime.min + fields["start_time"]).time()
+        if "end_time" in fields:
+            fields["end_time"] =  (datetime.min + fields["end_time"]).time()
+
+        task = TaskOutput(**fields)
+        return(task)
+
     def getAllTasks(self) -> list[TaskOutput]:
         sql_command = f"SELECT  * FROM {self._config.table}"
         self._cursor.execute(sql_command)
         results = self._cursor.fetchall()
 
-        tasks = [TaskOutput(**arg) for arg in results if arg is not None]  # type: ignore
+        tasks = [Mysql.convertSqlToTask(**arg) for arg in results if arg is not None]
         return tasks
 
     def addTask(self, task: TaskInput) -> TaskOutput:

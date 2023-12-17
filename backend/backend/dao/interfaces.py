@@ -5,8 +5,8 @@ from typing import Protocol
 class OptionalFields(TypedDict, total=False):
     description: str
     date: datetime.date
-    start_time: datetime.date
-    end_time: datetime.date
+    start_time: datetime.time
+    end_time: datetime.time
     goal: str
 
 class TaskInput(OptionalFields):

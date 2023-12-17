@@ -33,17 +33,22 @@ def createGraphqlApp(dao: DAO):
         title: str,
         description: Optional[str] = None,
         date_timestamp: Optional[datetime.date] = None,
-        start_timestamp: Optional[datetime.time] = None,
-        end_timestamp: Optional[datetime.time] = None,
+        start_timestamp: Optional[str] = None,
+        end_timestamp: Optional[str] = None,
         goal: Optional[str] = None,
         status: Status = Status.OPEN,
     ) -> TaskOutput:
+        start_time = (
+            datetime.datetime.strptime(start_timestamp, "%H:%M").time() if start_timestamp else None
+        )
+        end_time = datetime.datetime.strptime(end_timestamp, "%H:%M").time() if end_timestamp else None
+
         task_ql = TaskInput(
             title=title,
             description=description,
             date_timestamp=date_timestamp,
-            start_timestamp=start_timestamp,
-            end_timestamp=end_timestamp,
+            start_timestamp=start_time,
+            end_timestamp=end_time,
             goal=goal,
             status=status,
         )
@@ -60,16 +65,16 @@ def createGraphqlApp(dao: DAO):
             title: Optional[str] = None,
             description: Optional[str] = None,
             date_timestamp: Optional[float] = None,
-            start_timestamp: Optional[float] = None,
-            end_timestamp: Optional[float] = None,
+            start_timestamp: Optional[str] = None,
+            end_timestamp: Optional[str] = None,
             goal: Optional[str] = None,
             status: Optional[Status] = None
     ) -> TaskOutput:
         date = datetime.date.fromtimestamp(date_timestamp) if date_timestamp else None
         start_time = (
-            datetime.date.fromtimestamp(start_timestamp) if start_timestamp else None
+            datetime.datetime.strptime(start_timestamp, "%H:%M").time() if start_timestamp else None
         )
-        end_time = datetime.date.fromtimestamp(end_timestamp) if end_timestamp else None
+        end_time = datetime.datetime.strptime(end_timestamp, "%H:%M").time() if end_timestamp else None
         
         task_ql = TaskUpdate(
             title=title,
